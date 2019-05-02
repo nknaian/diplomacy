@@ -7,6 +7,7 @@
 
 ### Imports ###
 import argparse
+import json
 
 ### Constants ###
 MIN_NUM_PLAYERS = 5
@@ -20,90 +21,144 @@ class PlayerInputError(Exception):
 ### Object Classes ###
 
 class PlayerInfo:
-    def __init__(self):
+    def __init__(self, player_name):
+        self.name = player_name
         self.choices = {}
         self.num_cities = None
+
+    # Take input choices from player. Continue trying until entered correctly
+    def getChoicesFromInput(self, playersDict):
+        success = False
+        while success == False:
+            input_choices = input("Enter " + self.name + "\'s choices: ")
+            input_choices = input_choices.replace(" ", "")
+            choices = input_choices.split(",")
+            try:
+                self.setChoices(choices, playersDict)
+                success = True
+            except PlayerInputError as error_message:
+                print("Player Input Error: ", error_message)
+                success = False
+
+    # Take input num_cities from player. Continue trying until entered correctly
+    def getNumCitiesFromInput(self):
+        success = False
+        while(not success):
+            num_cities_string = input("Enter " + self.name + "\'s number of cities: ")
+            try:
+                self.setNumCities(num_cities_string)
+                success = True
+            except PlayerInputError as error_message:
+                print("Player Input Error: ", error_message)
+                success = False
+
+    # Raise a PlayerInputError exception if there are any problems with the
+    # player's entered choices. Otherwise, set choices
+    def setChoices(self, choices, playersDict):
+        # Make sure all names are in the dictionary
+        if any((choice not in playersDict) for choice in choices):
+            raise PlayerInputError("Player choice is unknown. Try again.")
+        # Make sure no more than three choices are made
+        elif len(choices) > 3:
+            raise PlayerInputError("Too many choices. Try again.")
+        # Make sure no names are repeated
+        elif len(choices) != len(set(choices)):
+            raise PlayerInputError("Player name repeated. Try again.")
+        # Make sure the player didn't chose themself
+        elif any((choice == self.name) for choice in choices):
+            raise PlayerInputError("Can't choose yourself!")
+        else:
+            self.choices = choices
+
+    # Raise a PlayerInputError exception if there are any problems with the
+    # player's entered number of cities. Otherwise, set num_cities
+    def setNumCities(self, num_cities):
+        if isinstance(num_cities, str):
+            if not num_cities.isdigit():
+                raise PlayerInputError("Integer not entered for number of cities. Try again")
+            else:
+                num_cities = int(num_cities)
+        elif not isinstance(num_cities, int):
+            raise PlayerInputError("Integer not entered for number of cities. Try again")
+
+        if num_cities < 0:
+            raise PlayerInputError("Negative integer entered for number of cities. Try again")
+
+        self.num_cities = num_cities
 
 class Players:
 
     def __init__(self):
-        # Parse player names to create self.dictionary
-        parser = argparse.ArgumentParser(description='Process player names')
-        parser.add_argument('players', nargs='+', help='List of players')
-        args = parser.parse_args()
-        player_list = args.players
 
-        # Thow input error if player_list is too short or long
+        # Parse command line input
+        parser = argparse.ArgumentParser(description='Process player names')
+        parser.add_argument('-p', '--players', nargs='+', help='List of players')
+        parser.add_argument('-j', '--json', help='Json file with players dictionary')
+        args = parser.parse_args()
+
+        # Create player_list and json_player_dict if json option was used. Throw
+        # error if there was a problem in the command line input
+        json_player_dict = None
+        player_list = []
         try:
+            if args.players != None:
+                player_list = args.players
+            elif args.json != None:
+                with open(args.json) as jsonFile:
+                    json_player_dict = json.load(jsonFile)
+                for player_name, player_info in json_player_dict.items():
+                    player_list.append(player_name)
+            else:
+                raise PlayerInputError("Must enter either --players or --json")
+
             if (len(player_list) < MIN_NUM_PLAYERS) or (len(player_list) > MAX_NUM_PLAYERS):
                 raise PlayerInputError("Must enter between {} and {} players".format(MIN_NUM_PLAYERS, MAX_NUM_PLAYERS))
 
         except PlayerInputError as error_message:
-            print("Player Input Error: ", error_message)
+            raise error_message
 
         else:
             # Create empty dictionary to story players
             self.dict = {}
             for player_name in player_list:
-                self.dict[player_name] = PlayerInfo()
+                self.dict[player_name] = PlayerInfo(player_name)
 
             # Get choices and num_cities for each player
-            for player_name, player_info in self.dict.items():
-                player_info.choices = self.getChoicesFromInput(player_name)
-                player_info.num_cities = self.getNumCitiesFromInput(player_name)
+            if json_player_dict == None:
+                for player_info in self.dict.values():
+                    player_info.getChoicesFromInput(self.dict)
+                    player_info.getNumCitiesFromInput()
 
-    # Take input choices from player. Continue trying until entered correctly
-    def getChoicesFromInput(self, player):
-        success = False
-        while success == False:
-            input_choices = input("Enter " + player + "\'s choices: ")
-            input_choices = input_choices.replace(" ", "")
-            choices = input_choices.split(",")
-            try:
-                # Make sure all names are in the dictionary
-                if any((choice not in self.dict) for choice in choices):
-                    print("choices = ", choices)
-                    raise PlayerInputError("Player choice is unknown. Try again.")
-                # Make sure no more than three choices are made
-                elif len(choices) > 3:
-                    raise PlayerInputError("Too many choices. Try again.")
-                # Make sure no names are repeated
-                elif len(choices) != len(set(choices)):
-                    raise PlayerInputError("Player name repeated. Try again.")
-                # Make sure the player didn't chose themself
-                elif any((choice == player) for choice in choices):
-                    raise PlayerInputError("Can't choose yourself! Try again.")
-                else:
-                    success = True
-            except PlayerInputError as error_message:
-                print("Player Input Error: ", error_message)
-                success = False
+            else:
+                try:
+                    for player_info in self.dict.values():
+                        json_player_info = json_player_dict[player_info.name]
 
-        return choices
+                        # Get choices from json and error check
+                        player_info.setChoices(json_player_info["choices"], self.dict)
 
-    # Take input num_cities from player. Continue trying until entered correctly
-    def getNumCitiesFromInput(self, player):
-        success = False
-        while(not success):
-            num_cities_string = input("Enter " + player + "\'s number of cities: ")
-            try:
-                if not num_cities_string.isdigit():
-                    raise PlayerInputError("Number not entered. Try again")
-                else:
-                    success = True
-            except PlayerInputError as error_message:
-                print("Player Input Error: ", error_message)
-                success = False
+                        # Get num cities from json and error check
+                        player_info.setNumCities(json_player_info["num_cities"])
 
-        return int(num_cities_string)
+                except PlayerInputError as error_message:
+                    raise error_message
 
     # Print a readable display of the player dictionary
     def printDict(self):
         for player_name, player_info in self.dict.items():
             print(player_name, ":\n\tchoices = ", player_info.choices, "\n\tnumber of cities: ", player_info.num_cities)
 
+
+
 ### Main ###
 
 if __name__ == "__main__":
-    players = Players()
-    players.printDict()
+
+    try:
+        # Initialize Players
+        players = Players()
+    except PlayerInputError as error_message:
+        print("PlayerInputError: ", error_message)
+    else:
+        # Print players dictionary
+        players.printDict()

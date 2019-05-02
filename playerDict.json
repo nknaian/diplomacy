@@ -1,0 +1,27 @@
+{
+  "aaron":
+  {
+    "choices": ["alex", "faris", "nick"],
+    "num_cities": 3
+  },
+  "alex":
+  {
+    "choices": ["faris", "corey", "nick"],
+    "num_cities": "5"
+  },
+  "faris":
+  {
+    "choices": ["alex", "corey", "nick"],
+    "num_cities": 3
+  },
+  "nick":
+  {
+    "choices": ["alex", "faris", "corey"],
+    "num_cities": 3
+  },
+  "corey":
+  {
+    "choices": ["alex", "aaron", "nick"],
+    "num_cities": 3
+  }
+}
