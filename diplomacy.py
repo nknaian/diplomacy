@@ -205,10 +205,34 @@ class Players:
                     self.player_directory[player_name].remove(choice)
 
 
+    def getChoiceFromChoiceMaker(self, choice_maker, possible_matches):
+        print("{}, who would you like to meet with?\nOptions:".format(possible_matches))
+        for possible_match in possible_matches:
+            print(possible_match)
+        while True:
+            try:
+                choice = input()
+                if choice in possible_matches:
+                    return choice
+                else:
+                    raise PlayerInputError("Player is not one of the possible matches. Try again.")
+
+            except PlayerInputError as error_message:
+                print("PlayerInputError: ", error_message)
+
     def determineMeetingMatch(self, meeting_number, unbooked_players):
-        possible_choice_makers = playersWhoCanMakeChoice(unbooked_players)
+        possible_choice_makers = self.playersWhoCanMakeChoice(unbooked_players)
         possible_choice_makers = self.playersInNeedOfMatchChoice(possible_choice_makers)
         choice_maker = pickRandomPlayerFromList(possible_choice_makers)
+        possible_matches = list(set(self.player_directory[choice_maker].choices) & set(unbooked_players))
+
+        if len(possible_matches) > 1:
+            choice = self.getChoiceFromChoiceMaker()
+        else:
+            choice = possible_matches[0]
+
+        # TODO: Then add the pairing of the choice_maker with choice to the meeting schedule
+
 
     def getUnbookedPlayers(self, meeting_number):
         try:
