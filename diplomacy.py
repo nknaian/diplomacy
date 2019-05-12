@@ -1,17 +1,9 @@
 ### Description: ###
-# This program will take in 5 - 7 players inputs of up to 3 players
-# that the player wants to meet with in a round. And it also takes
-# as input that person's current number of cities. The program will
-# return 3 rounds of meeting combinations that take into  account the
-# players' choices and  number of cities
-
-### Areas for improvement: ###
-# 0. Possible bug: I witnessed a case where in the second meeting slot, no one wanted to meet with each other, but then meetings happened in the third...this makes me think that some meetings could have happened in slot 2, but were incorrectly filtered out
-# 1. Change Player's self.player_directory into a list of PlayerInfo objects. Just used PlayerInfo.name when the name is needed...that's why it's there
-# 2. Pass around Player objects in functions instead of string lists that contain names...will be much less bug proof
-# 3. Use function hints for argument types and return types
-# 4. Add error checking to determineMeetingSchedule
-# 5. Have output be json in addition to test in command line
+# This program will take in MIN_NUM_PLAYERS - MAX_NUM_PLAYERS players inputs of
+# up to 3 players that the player wants to meet with in a round. And it also
+# takes as input that person's current number of cities. The program will
+# return NUM_MEETINGS rounds of meeting combinations that take into
+# account the players' choices and  number of cities
 
 
 ### Imports ###
