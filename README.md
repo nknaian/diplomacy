@@ -25,3 +25,4 @@ used PlayerInfo.name when the name is needed...that's why it's there
 the rules it calculating the meeting schedule...so it will be more easily configurable
 8. Make the number of meetings change based on how many players there are. I
 believe this should allow for using this script with less than 5 participants.
+9. Make a new class called MeetingSchedule, and  pull a bunch of stuff out of PlayerDirectory and put it in here
