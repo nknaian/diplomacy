@@ -10,10 +10,6 @@ meetings, and the number of cities they currently possess. The program will
 return a meeting schedule that takes into account the inputted player information.
 
 ## Areas for improvement:
-0. Possible bug: I witnessed a case where in the second meeting slot, no one
-wanted to meet with each other, but then meetings happened in the third...this
-makes me think that some meetings could have happened in slot 2, but were
-incorrectly filtered out
 1. Change Player's self.player_directory into a list of PlayerInfo objects. Just
 used PlayerInfo.name when the name is needed...that's why it's there
 2. Pass around Player objects in functions instead of string lists that contain names...will be much less bug proof

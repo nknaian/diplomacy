@@ -117,8 +117,9 @@ class PlayerDirectory:
                     self.meeting_schedule[i].addGroup(meeting_match)
                 else:
                     # No one wanted each other, so just put all the remaining players in a room together
-                    self.meeting_schedule[i].addGroup(unbooked_players)
                     print("\n\nGuess no one wanted to meet...")
+                    print("\nHere's what their choices look like right now:\n")
+                    self.printPlayerDirectory(unbooked_players)
                     break
                 unbooked_players = list(set(player_list) - set(self.meeting_schedule[i].getBookedPlayers()))
 
@@ -128,10 +129,13 @@ class PlayerDirectory:
 
             print("\n\nDone.")
 
-    # Print a readable display of the input dictionary
-    def printPlayerDirectory(self):
+    # Print a readable display player_directory. Can input a subset of players to print
+    def printPlayerDirectory(self, player_subset=None):
+        if player_subset is None:
+            player_subset = list(self.player_directory.keys())
         for player_name, player_info in self.player_directory.items():
-            print(player_name, ":\n\tchoices = ", player_info.choices, "\n\tnumber of cities: ", player_info.num_cities)
+            if player_name in player_subset:
+                print(player_name, ":\n\tchoices = ", player_info.choices, "\n\tnumber of cities: ", player_info.num_cities)
 
     def printMeetingSchedule(self):
         for i in range(0, len(self.meeting_schedule)):
