@@ -5,6 +5,15 @@
 # return 3 rounds of meeting combinations that take into  account the
 # players' choices and  number of cities
 
+### Areas for improvement: ###
+# 0. Possible bug: I witnessed a case where in the second meeting slot, no one wanted to meet with each other, but then meetings happened in the third...this makes me think that some meetings could have happened in slot 2, but were incorrectly filtered out
+# 1. Change Player's self.player_directory into a list of PlayerInfo objects. Just used PlayerInfo.name when the name is needed...that's why it's there
+# 2. Pass around Player objects in functions instead of string lists that contain names...will be much less bug proof
+# 3. Use function hints for argument types and return types
+# 4. Add error checking to determineMeetingSchedule
+# 5. Have output be json in addition to test in command line
+
+
 ### Imports ###
 import argparse
 import json
@@ -225,6 +234,8 @@ class Players:
 
         # Build meeting list
         for i in range(0, NUM_MEETINGS):
+            print("\n\nCalculating meeting slot {}...".format(i+1))
+
             unbooked_players = player_list
             while len(unbooked_players) > MAX_GROUP_SIZE:
                 # Take player with fewest cities and least matches. And make match with that person
@@ -235,11 +246,15 @@ class Players:
                 else:
                     # No one wanted each other, so just put all the remaining players in a room together
                     self.meeting_schedule[i].addGroup(unbooked_players)
+                    print("\n\nGuess no one wanted to meet...")
                     break
                 unbooked_players = list(set(player_list) - set(self.meeting_schedule[i].getBookedPlayers()))
 
             # Now make a group with the remaining unbooked players
             self.meeting_schedule[i].addGroup(unbooked_players)
+            print("\n\nWell, now {} are stuck together.".format(unbooked_players))
+
+            print("\n\nDone.")
 
     # Print a readable display of the input dictionary
     def printPlayerDirectory(self):
@@ -280,6 +295,7 @@ class Players:
                 choice = self.getChoiceFromChoiceMaker(choice_maker, possible_matches)
             else:
                 choice = possible_matches[0]
+                print("\n\n{} choses {} automatically".format(choice_maker, choice))
 
             meeting_match = [choice_maker, choice]
 
@@ -351,9 +367,10 @@ if __name__ == "__main__":
         players.printPlayerDirectory()
 
         # Determine the meeting schedule
-        print("\n\nCalculating meeting schedule...")
         players.determineMeetingSchedule()
-        print("\n\nDone calculating... Now printing out the meeting schedule: ")
+
+        # Print meeting schedule
+        print("\n\nMeeting schedule:\n\n")
         players.printMeetingSchedule()
 
     except PlayerInputError as error_message:
