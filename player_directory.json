@@ -1,27 +1,37 @@
 {
   "aaron":
   {
-    "choices": ["alex", "faris", "nick"],
-    "num_cities": 3
+    "choices": ["faris", "corey", "alex"],
+    "num_cities": 4
   },
   "alex":
   {
-    "choices": ["faris", "corey", "nick"],
-    "num_cities": "5"
+    "choices": ["faris", "nick", "dave"],
+    "num_cities": 5
   },
   "faris":
   {
-    "choices": ["alex", "corey", "nick"],
+    "choices": ["alex", "nick", "aaron"],
     "num_cities": 3
   },
   "nick":
   {
-    "choices": ["alex", "faris", "corey"],
+    "choices": ["dave", "richie", "aaron"],
     "num_cities": 3
   },
   "corey":
   {
     "choices": ["alex", "aaron", "nick"],
+    "num_cities": 3
+  },
+  "richie":
+  {
+    "choices": ["corey", "nick", "dave"],
+    "num_cities": 3
+  },
+  "dave":
+  {
+    "choices": ["richie", "faris", "nick"],
     "num_cities": 3
   }
 }
