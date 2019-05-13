@@ -6,9 +6,10 @@
 import copy
 import json
 
-import utils
-import player as p
-import meeting_slot as ms
+import diplomacy.utils.helpers as helper
+import diplomacy.utils.exceptions as exception
+import diplomacy.objects.player as player
+import diplomacy.objects.meeting_slot as meeting_slot
 
 ### Player Directory Class ###
 class PlayerDirectory:
@@ -36,7 +37,7 @@ class PlayerDirectory:
 
         # Initialize meetings schedule
         for i in range(0, self.NUM_MEETINGS):
-            self.meeting_schedule.append(ms.MeetingSlot())
+            self.meeting_schedule.append(meeting_slot.MeetingSlot())
 
     def readPlayersFromInput(self, command_line_input):
         # Create player_list and json_player_input_dict if json option was used. Throw
@@ -45,7 +46,7 @@ class PlayerDirectory:
         player_list = []
         try:
             if command_line_input.players != None and command_line_input.json != None:
-                raise utils.PlayerInputError("Can only specify one input source. Either --json or --players")
+                raise exception.PlayerInputError("Can only specify one input source. Either --json or --players")
             elif command_line_input.players != None:
                 player_list = command_line_input.players
             elif command_line_input.json != None:
@@ -54,17 +55,17 @@ class PlayerDirectory:
                 for player_name, player_info in json_player_input_dict.items():
                     player_list.append(player_name)
             else:
-                raise utils.PlayerInputError("Must enter either --players or --json")
+                raise exception.PlayerInputError("Must enter either --players or --json")
 
             if (len(player_list) < self.MIN_NUM_PLAYERS) or (len(player_list) > self.MAX_NUM_PLAYERS):
-                raise utils.PlayerInputError("Must enter between {} and {} players".format(self.MIN_NUM_PLAYERS, self.MAX_NUM_PLAYERS))
+                raise exception.PlayerInputError("Must enter between {} and {} players".format(self.MIN_NUM_PLAYERS, self.MAX_NUM_PLAYERS))
 
-        except utils.PlayerInputError as error_message:
+        except exception.PlayerInputError as error_message:
             raise error_message
 
         # Create empty dictionary to story input
         for player_name in player_list:
-            self.player_directory[player_name] = p.Player(player_name)
+            self.player_directory[player_name] = player.Player(player_name)
 
         # Get choices and num_cities for each player
         if json_player_input_dict == None:
@@ -82,7 +83,7 @@ class PlayerDirectory:
                     # Get num cities from json and error check
                     player_info.setNumCities(json_player_info["num_cities"])
 
-            except utils.PlayerInputError as error_message:
+            except exception.PlayerInputError as error_message:
                 raise error_message
 
     # Narrow down the choices member in the players' info so that only matches are included
@@ -157,7 +158,7 @@ class PlayerDirectory:
 
             # If there are still multiple options, choose randomly
             if len(possible_choice_makers) > 1:
-                choice_maker = utils.pickRandomEntryFromList(possible_choice_makers)
+                choice_maker = helper.pickRandomEntryFromList(possible_choice_makers)
             else:
                 choice_maker = possible_choice_makers[0]
 
@@ -212,7 +213,7 @@ class PlayerDirectory:
                     fewest_meeting_choices["players"].append(player_name)
 
         # return a list of the needist players that can make a choice
-        fewest_meeting_choices_and_cities = utils.getOverlapBetweenLists(fewest_meeting_choices["players"], fewest_cities["players"])
+        fewest_meeting_choices_and_cities = helper.getOverlapBetweenLists(fewest_meeting_choices["players"], fewest_cities["players"])
         if fewest_meeting_choices_and_cities:
             return fewest_meeting_choices_and_cities
         else:
@@ -226,7 +227,7 @@ class PlayerDirectory:
                 if choice in possible_matches:
                     return choice
                 else:
-                    raise utils.PlayerInputError("Player is not one of the possible matches. Try again.")
+                    raise exception.PlayerInputError("Player is not one of the possible matches. Try again.")
 
-            except utils.PlayerInputError as error_message:
-                print("utils.PlayerInputError: ", error_message)
+            except exception.PlayerInputError as error_message:
+                print("PlayerInputError: ", error_message)

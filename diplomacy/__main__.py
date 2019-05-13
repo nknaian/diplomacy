@@ -9,8 +9,9 @@
 
 import argparse
 
-import utils
-import player_directory as pd
+import diplomacy.utils.helpers as helper
+import diplomacy.utils.exceptions as exception
+import diplomacy.objects.player_directory as playerdir
 
 ### Main ###
 
@@ -23,7 +24,7 @@ if __name__ == "__main__":
         args = parser.parse_args()
 
         # Initialize Players
-        player_directory = pd.PlayerDirectory(args)
+        player_directory = playerdir.PlayerDirectory(args)
 
         # Print the player directory after choices have been narrowed
         print("\nPlayer information with choices narrowed:")

@@ -4,7 +4,8 @@
 
 ### Imports ###
 
-import utils
+import diplomacy.utils.helpers as helper
+import diplomacy.utils.exceptions as exception
 
 ### Meeting Slot Class ###
 class MeetingSlot:

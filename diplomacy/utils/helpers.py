@@ -1,14 +1,9 @@
 ### Description: ###
-# Helpful classes and functions for the whole diplomacy project
+# Helpful functions for the whole diplomacy project
 
 ### Imports ###
 
 from random import randint
-
-### Exceptions ###
-
-class PlayerInputError(Exception):
-    pass
 
 ### Helper Functions ###
 
