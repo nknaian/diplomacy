@@ -1,13 +1,29 @@
-# diplomacy
-Script to assist in playing the boardgame diplomacy
+# Diplomacy
+
+## Breif
+Program to assist in determining the meeting schedule for the diplomatic phase of the boardgame diplomacy.
 
 ## Usage
-Current usage is to assist in figuring out what the meeting schedule will be for
-the diplomatic phase of a game of diplomacy. Call diplomacy.py with command line
-input of either a json file as input or a list of player names. The input
-information needed is the players participating and their player choices for
-meetings, and the number of cities they currently possess. The program will
-return a meeting schedule that takes into account the inputted player information.
+python -m diplomacy --json player_directory.json
+OR
+python -m diplomacy --players name1 name 2 name 3 ..
+
+## Description
+### Determines the best meeting schedule for the diplomatic phase of diplomacy by using  
+the following input information:
+1. the players participating
+2. Their choices for who the players want to meet with (up to 3)
+3. The number of cities they currently possess
+### Uses the following rules to determine the meeting matches:
+1. Only players that have chosen each other can be matched together
+2. Players who have had the fewest choices of who to match with in the 
+current diplomatic choosing phase will have priority when determining whose choice 
+to take into account next
+3. Players who have the fewer cities than others will have priority when determiing
+whose choice to take into account next
+4. If there is a tie in who gets to choose, a player is chosen randomly
+5. Once there are 3 players or fewer remaining unmatched, they all get put in a group 
+together, and we move on to the next round of meetings
 
 ## Areas for improvement:
 1. Change Player's self.player_directory into a list of PlayerInfo objects. Just
