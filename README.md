@@ -1,6 +1,6 @@
 # Diplomacy
 
-## Breif
+## Brief
 Program to assist in determining the meeting schedule for the diplomatic phase of the boardgame diplomacy.
 
 ## Usage
