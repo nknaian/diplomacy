@@ -26,6 +26,8 @@ whose choice to take into account next
 together, and we move on to the next round of meetings
 
 ## Areas for improvement:
+0. Change incrementing number_meeting_choices to number_meeting_matches. And
+increment both players who get matched together
 1. Change Player's self.player_directory into a list of PlayerInfo objects. Just
 used PlayerInfo.name when the name is needed...that's why it's there
 2. Pass around Player objects in functions instead of string lists that contain names...will be much less bug proof
@@ -37,3 +39,4 @@ the rules it calculating the meeting schedule...so it will be more easily config
 7. Make the number of meetings change based on how many players there are. I
 believe this should allow for using this script with less than 5 participants.
 8. Make a new class called MeetingSchedule, and  pull a bunch of stuff out of PlayerDirectory and put it in here
+9. Add unit testing
